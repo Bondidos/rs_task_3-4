@@ -1,34 +1,48 @@
 package subtask1
 
 import java.lang.StringBuilder
+import kotlin.math.abs
 
 class PolynomialConverter {
 
-    // TODO: Complete the following function
     fun convertToStringFrom(numbers: Array<Int>): String? {
-        /*@Test
-        fun testConvertToString1() {
-            val result = converter.convertToStringFrom(arrayOf(2, -1, 78))
-            assertEquals("2x^2 - x + 78", result)
-        }*/
-        // (if y<2 nx) (if y = 0 n) else nx^y
+        if(numbers.isEmpty()) return null
+
         val str = StringBuilder("")
-        for(i in numbers){
-            if((numbers.size - numbers.indexOf(i) - 1 ) == 1){
-                //   -/+ cases
-                if(i>0)
-                    str.append("${i}x ")
-                if(i<0)
-                    str.append("${i}x ")
-            }
-            if ((numbers.size - numbers.indexOf(i) - 1 ) == 0){
-                str.append("$i ")
-            }
-            if ((numbers.size - numbers.indexOf(i) - 1 ) > 1){
-                str.append("${i}x^${(numbers.size - numbers.indexOf(i) - 1 )} ")
-            }
+        for (i in numbers.indices) {
+            str.append(convertToString(i,numbers))
         }
         return str.toString()
-        //throw NotImplementedError("Not implemented")
     }
 }
+fun convertToString(index: Int, numbers: Array<Int>): String {
+    //first : calculate "k"(multiplier) from position in array
+    val k = numbers.size - index - 1 //multiplier
+    val str = StringBuilder("")
+    when {
+        index < numbers.size - 2 -> {
+            when {
+                numbers[index] <  0 && index != 0-> str.append("- ${abs(numbers[index])}x^$k ")
+                //numbers[index] == 0              -> str.append("")
+                numbers[index] >  0 && index != 0-> str.append("+ ${abs(numbers[index])}x^$k ")
+                numbers[index] <  0 && index == 0-> str.append("${abs(numbers[index])}x^$k ")
+                numbers[index] >  0 && index == 0-> str.append("${abs(numbers[index])}x^$k ")
+            }
+        }
+        index == numbers.size - 2 -> {
+            when{
+                numbers[index] == 1              -> str.append("x ")
+                numbers[index] == -1              -> str.append("- x ")
+                numbers[index] <  0 -> str.append("- ${abs(numbers[index])}x ")
+                numbers[index] >  0 -> str.append("+ ${abs(numbers[index])}x ")
+            }
+        }
+        else -> when{
+            numbers[index] <  0 -> str.append("- ${abs(numbers[index])}")
+            numbers[index] >  0 -> str.append("+ ${abs(numbers[index])}")
+        }
+    }
+    return str.toString()
+}
+
+
